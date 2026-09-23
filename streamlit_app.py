@@ -132,7 +132,268 @@ def generate_pdf_invoice(sale, items):
 
 st.set_page_config(page_title="SmartBiz ERP", page_icon="💼", layout="wide")
 
+# ==================== ARCADE NIGHT GLOBAL THEME ====================
+st.html("""
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@400;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ===== ARCADE NIGHT THEME — Streamlit 1.56 Compatible ===== */
+:root {
+  --color-primary:   #eef0e6;
+  --color-secondary: #8a8f80;
+  --color-accent:    #c8ff3a;
+  --color-neutral:   #11120f;
+  --color-surface:   #0a0b08;
+  --color-surface2:  #14160f;
+  --color-surface3:  #1c1e17;
+  --color-border:    rgba(238,240,230,0.08);
+  --font-display:    'Big Shoulders Display', sans-serif;
+  --font-body:       'JetBrains Mono', monospace;
+}
+
+/* ── Global background & font — broadest possible selectors ── */
+html, body, [class*="css"] {
+  background-color: #0a0b08 !important;
+  color: #eef0e6 !important;
+  font-family: 'JetBrains Mono', monospace !important;
+}
+
+.stApp {
+  background-color: #0a0b08 !important;
+  font-family: 'JetBrains Mono', monospace !important;
+}
+
+/* Main content area */
+.main, .stMainBlockContainer, .block-container,
+[data-testid="stMain"], [data-testid="stAppViewContainer"] > section:first-child {
+  background-color: #0a0b08 !important;
+  color: #eef0e6 !important;
+}
+
+/* Sidebar */
+section[data-testid="stSidebar"],
+[data-testid="stSidebar"] {
+  background-color: #14160f !important;
+  border-right: 1px solid rgba(238,240,230,0.08) !important;
+}
+section[data-testid="stSidebar"] * {
+  color: #eef0e6 !important;
+  font-family: 'JetBrains Mono', monospace !important;
+}
+
+/* Headers */
+h1, h2, h3 {
+  font-family: 'Big Shoulders Display', sans-serif !important;
+  color: #eef0e6 !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.015em !important;
+}
+
+/* Metric cards */
+div[data-testid="metric-container"],
+[data-testid="stMetric"] {
+  background: #1c1e17 !important;
+  border: 1px solid rgba(238,240,230,0.08) !important;
+  border-radius: 2px !important;
+  padding: 16px !important;
+}
+[data-testid="stMetricLabel"] > div,
+[data-testid="stMetricLabel"] label,
+div[data-testid="metric-container"] label {
+  color: #8a8f80 !important;
+  font-size: 0.75rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+  font-family: 'JetBrains Mono', monospace !important;
+}
+[data-testid="stMetricValue"] > div,
+div[data-testid="metric-container"] [data-testid="stMetricValue"] {
+  color: #c8ff3a !important;
+  font-family: 'Big Shoulders Display', sans-serif !important;
+  font-size: 1.7rem !important;
+  font-weight: 800 !important;
+}
+[data-testid="stMetricDelta"] {
+  color: #8a8f80 !important;
+  font-size: 0.72rem !important;
+}
+
+/* Buttons */
+.stButton > button,
+.stFormSubmitButton > button {
+  background-color: #c8ff3a !important;
+  color: #0a0b08 !important;
+  border: none !important;
+  border-radius: 2px !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  font-weight: 700 !important;
+  font-size: 0.85rem !important;
+  padding: 10px 22px !important;
+  letter-spacing: 0.04em !important;
+  text-transform: uppercase !important;
+  transition: opacity 0.15s ease, transform 0.1s ease !important;
+}
+.stButton > button:hover,
+.stFormSubmitButton > button:hover {
+  opacity: 0.85 !important;
+  transform: translateY(-1px) !important;
+  background-color: #c8ff3a !important;
+  color: #0a0b08 !important;
+}
+
+/* Inputs */
+input[type="text"], input[type="password"], input[type="email"],
+input[type="number"], textarea {
+  background-color: #1c1e17 !important;
+  border: 1px solid rgba(238,240,230,0.1) !important;
+  border-radius: 2px !important;
+  color: #eef0e6 !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 0.875rem !important;
+}
+input:focus, textarea:focus {
+  border-color: #c8ff3a !important;
+  box-shadow: 0 0 0 2px rgba(200,255,58,0.15) !important;
+  outline: none !important;
+}
+
+/* Selectbox */
+[data-baseweb="select"] > div,
+[data-baseweb="select"] {
+  background-color: #1c1e17 !important;
+  border-color: rgba(238,240,230,0.1) !important;
+}
+[data-baseweb="select"] span, [data-baseweb="select"] div {
+  color: #eef0e6 !important;
+  font-family: 'JetBrains Mono', monospace !important;
+}
+[data-baseweb="popover"], [data-baseweb="menu"] {
+  background-color: #14160f !important;
+}
+[data-baseweb="option"] {
+  background-color: #14160f !important;
+  color: #eef0e6 !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 0.85rem !important;
+}
+[data-baseweb="option"]:hover {
+  background-color: #1c1e17 !important;
+}
+
+/* Labels */
+label {
+  color: #8a8f80 !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 0.75rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+}
+
+/* Dataframes */
+[data-testid="stDataFrame"] {
+  border: 1px solid rgba(238,240,230,0.08) !important;
+  border-radius: 2px !important;
+}
+[data-testid="stDataFrame"] th {
+  background: #1c1e17 !important;
+  color: #8a8f80 !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 0.72rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+}
+[data-testid="stDataFrame"] td {
+  color: #eef0e6 !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 0.82rem !important;
+}
+
+/* Expanders */
+details, [data-testid="stExpander"] {
+  background: #14160f !important;
+  border: 1px solid rgba(238,240,230,0.08) !important;
+  border-radius: 2px !important;
+}
+details summary, [data-testid="stExpander"] summary {
+  color: #eef0e6 !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  font-weight: 600 !important;
+}
+
+/* Alerts */
+[data-testid="stAlert"], div[role="alert"] {
+  border-radius: 2px !important;
+  border-left: 3px solid #c8ff3a !important;
+  background: #14160f !important;
+  color: #eef0e6 !important;
+}
+[data-testid="stAlert"] p, div[role="alert"] p {
+  color: #eef0e6 !important;
+  font-family: 'JetBrains Mono', monospace !important;
+}
+
+/* Dividers */
+hr { border-color: rgba(238,240,230,0.08) !important; }
+
+/* Captions */
+small, .stCaption, [data-testid="stCaptionContainer"] {
+  color: #8a8f80 !important;
+  font-size: 0.75rem !important;
+  font-family: 'JetBrains Mono', monospace !important;
+}
+
+/* Tabs */
+[data-baseweb="tab-list"] {
+  background: #14160f !important;
+  border-bottom: 1px solid rgba(238,240,230,0.08) !important;
+}
+[data-baseweb="tab"] {
+  color: #8a8f80 !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 0.82rem !important;
+}
+[aria-selected="true"][data-baseweb="tab"] {
+  color: #c8ff3a !important;
+  border-bottom: 2px solid #c8ff3a !important;
+  background: transparent !important;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: #0a0b08; }
+::-webkit-scrollbar-thumb { background: #1c1e17; border-radius: 0; }
+::-webkit-scrollbar-thumb:hover { background: #c8ff3a; }
+
+/* Download buttons */
+[data-testid="stDownloadButton"] > button {
+  background: transparent !important;
+  border: 1px solid #c8ff3a !important;
+  color: #c8ff3a !important;
+  text-transform: uppercase !important;
+}
+[data-testid="stDownloadButton"] > button:hover {
+  background: #c8ff3a !important;
+  color: #0a0b08 !important;
+}
+
+/* Radio nav */
+[data-testid="stRadio"] label {
+  color: #8a8f80 !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 0.82rem !important;
+}
+[data-testid="stRadio"] label:hover { color: #c8ff3a !important; }
+
+/* Plotly chart backgrounds */
+.js-plotly-plot .plotly, .plot-container {
+  background: #0a0b08 !important;
+}
+</style>
+""")
+
 init_db()
+
 
 if 'user' not in st.session_state:
     st.session_state.user = None
@@ -155,142 +416,200 @@ def logout_user():
     st.session_state.user = None
     st.rerun()
 
-# ----------------- LOGIN SCREEN -----------------
+# ----------------- LOGIN SCREEN (ARCADE NIGHT) -----------------
 if not st.session_state.user:
-    st.markdown("""
+    st.html("""
     <style>
-    /* From Uiverse.io by micaelgomestavares */
+    /* Login page override - Arcade Night */
     .stApp {
-      background: radial-gradient(circle at 10% 20%, #1e293b 0%, #0f172a 90%);
+      background: radial-gradient(ellipse at 15% 25%, #1c1e17 0%, #0a0b08 80%) !important;
     }
 
-    [data-testid="stForm"] {
+    .login-wrapper {
       display: flex;
-      flex-direction: column;
-      gap: 10px;
-      background-color: #ffffff !important;
-      padding: 30px !important;
-      max-width: 450px !important;
-      margin: 40px auto !important;
-      border-radius: 20px !important;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3) !important;
-      border: 1.5px solid #ecedec !important;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif !important;
+      align-items: center;
+      justify-content: center;
+      min-height: 88vh;
+    }
+
+    .login-card {
+      width: 460px;
+      background: #14160f;
+      border: 1px solid rgba(238,240,230,0.08);
+      padding: 44px 40px 36px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+    .login-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: #c8ff3a;
+    }
+
+    .login-badge {
+      display: inline-block;
+      background: #c8ff3a;
+      color: #0a0b08;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      padding: 3px 10px;
+      margin-bottom: 18px;
+      text-transform: uppercase;
+    }
+
+    .login-title {
+      font-family: 'Big Shoulders Display', sans-serif;
+      font-size: 2.8rem;
+      font-weight: 800;
+      color: #eef0e6;
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+      margin-bottom: 6px;
+    }
+
+    .login-sub {
+      color: #8a8f80;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      margin-bottom: 32px;
+      letter-spacing: 0.01em;
+    }
+
+    .login-label {
+      display: block;
+      color: #8a8f80;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    /* Override Streamlit form for dark theme */
+    [data-testid="stForm"] {
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      padding: 0 !important;
     }
 
     [data-testid="stForm"] label {
-      color: #151717 !important;
-      font-weight: 600 !important;
-      font-size: 14px !important;
-      margin-bottom: 4px !important;
+      color: #8a8f80 !important;
+      font-family: 'JetBrains Mono', monospace !important;
+      font-size: 0.68rem !important;
+      font-weight: 700 !important;
+      text-transform: uppercase !important;
+      letter-spacing: 0.1em !important;
     }
 
     [data-testid="stForm"] input {
-      border: 1.5px solid #ecedec !important;
-      border-radius: 10px !important;
-      height: 50px !important;
+      background-color: #1c1e17 !important;
+      border: 1px solid rgba(238,240,230,0.1) !important;
+      border-radius: 0 !important;
+      color: #eef0e6 !important;
+      font-family: 'JetBrains Mono', monospace !important;
+      font-size: 0.875rem !important;
+      height: 48px !important;
       padding-left: 14px !important;
-      font-size: 14px !important;
-      color: #0f172a !important;
-      transition: 0.2s ease-in-out !important;
-      background-color: #ffffff !important;
+      transition: border-color 0.2s !important;
     }
 
     [data-testid="stForm"] input:focus {
-      border: 1.5px solid #2d79f3 !important;
-      box-shadow: none !important;
-      outline: none !important;
+      border-color: #c8ff3a !important;
+      box-shadow: 0 0 0 2px rgba(200,255,58,0.12) !important;
     }
 
     [data-testid="stFormSubmitButton"] button {
-      margin: 15px 0 5px 0 !important;
-      background-color: #151717 !important;
+      background-color: #c8ff3a !important;
+      color: #0a0b08 !important;
       border: none !important;
-      color: white !important;
-      font-size: 15px !important;
-      font-weight: 500 !important;
-      border-radius: 10px !important;
-      height: 50px !important;
+      border-radius: 0 !important;
+      font-family: 'JetBrains Mono', monospace !important;
+      font-weight: 700 !important;
+      font-size: 0.875rem !important;
+      letter-spacing: 0.06em !important;
+      height: 48px !important;
       width: 100% !important;
+      margin-top: 20px !important;
       cursor: pointer !important;
-      transition: 0.2s ease-in-out !important;
+      transition: opacity 0.15s, transform 0.1s !important;
+      text-transform: uppercase !important;
     }
-
     [data-testid="stFormSubmitButton"] button:hover {
-      background-color: #252727 !important;
-      border: none !important;
-      color: white !important;
+      opacity: 0.88 !important;
+      transform: translateY(-1px) !important;
     }
 
-    .form-header-title {
-      font-weight: 700;
-      color: #0f172a;
-      font-size: 24px;
-      text-align: center;
-      margin-bottom: 2px;
-    }
-
-    .form-header-sub {
-      color: #64748b;
-      font-size: 14px;
-      text-align: center;
-      margin-bottom: 15px;
-    }
-
-    .flex-row-links {
+    .login-remember-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 14px;
-      margin-top: 4px;
+      margin-top: 6px;
+    }
+    .login-remember-row span {
+      color: #8a8f80;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+    }
+    .login-remember-row a {
+      color: #c8ff3a;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      text-decoration: none;
+      font-weight: 700;
     }
 
-    .flex-row-links span {
-      color: #2d79f3;
-      font-weight: 500;
-      cursor: pointer;
+    .login-creds-strip {
+      margin-top: 20px;
+      padding: 12px 14px;
+      background: #1c1e17;
+      border-left: 3px solid #c8ff3a;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: #8a8f80;
     }
-
-    .demo-credentials-card {
-      max-width: 450px;
-      margin: 0 auto;
-      padding: 12px;
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 10px;
-      font-size: 13px;
-      color: #475569;
-      text-align: center;
-    }
+    .login-creds-strip strong { color: #eef0e6; }
     </style>
-    """, unsafe_allow_html=True)
+    """)
 
-    col1, col2, col3 = st.columns([1, 2, 1])
+    col1, col2, col3 = st.columns([1, 1.4, 1])
     with col2:
+        st.markdown("""
+        <div class='login-card'>
+          <div class='login-badge'>⚡ SmartBiz ERP</div>
+          <div class='login-title'>SIGN<br>IN</div>
+          <div class='login-sub'>Enterprise Resource Planning System</div>
+        </div>
+        """, unsafe_allow_html=True)
+
         with st.form("login_form"):
-            st.markdown("<div class='form-header-title'>💼 SmartBiz ERP</div>", unsafe_allow_html=True)
-            st.markdown("<div class='form-header-sub'>Enterprise Resource Planning & Management</div>", unsafe_allow_html=True)
+            email = st.text_input("Email Address", value="admin@smartbiz.com", placeholder="admin@smartbiz.com")
+            password = st.text_input("Password", type="password", value="admin123", placeholder="••••••••")
 
-            email = st.text_input("Email", value="admin@smartbiz.com", placeholder="Enter your Email")
-            password = st.text_input("Password", type="password", value="admin123", placeholder="Enter your Password")
+            st.markdown("""
+            <div class='login-remember-row'>
+              <span>⚡ Secure enterprise login</span>
+              <a href='#'>Forgot password?</a>
+            </div>
+            """, unsafe_allow_html=True)
 
-            st.markdown("<div class='flex-row-links'><label><input type='checkbox' checked> Remember me</label><span>Forgot password?</span></div>", unsafe_allow_html=True)
-
-            submit = st.form_submit_button("Sign In")
+            submit = st.form_submit_button("→ ACCESS SYSTEM")
 
             if submit:
                 if login_user(email, password):
-                    st.success("Login successful!")
+                    st.success("Access granted. Loading dashboard...")
                     st.rerun()
                 else:
-                    st.error("Invalid email or password.")
-
-            st.markdown("<p style='text-align: center; font-size: 14px; color: black; margin: 10px 0 0 0;'>Demo Account: <span style='color: #2d79f3; font-weight: 500;'>Super Admin</span></p>", unsafe_allow_html=True)
+                    st.error("⛔ Invalid credentials. Access denied.")
 
         st.markdown("""
-        <div class='demo-credentials-card'>
-          <div><strong>Email:</strong> admin@smartbiz.com</div>
-          <div><strong>Password:</strong> admin123</div>
+        <div class='login-creds-strip'>
+          Demo → <strong>admin@smartbiz.com</strong> / <strong>admin123</strong> &nbsp;|&nbsp; Role: <strong>Super Admin</strong>
         </div>
         """, unsafe_allow_html=True)
     st.stop()
@@ -300,9 +619,24 @@ user = st.session_state.user
 allowed_modules = ROLES.get(user['role'], ['Dashboard'])
 
 with st.sidebar:
-    st.markdown(f"### 💼 **SmartBiz ERP**")
-    st.markdown(f"👤 **{user['name']}**")
-    st.caption(f"Role: `{user['role']}`")
+    st.markdown("""
+    <div style='padding: 4px 0 8px 0;'>
+      <div style='font-family:"Big Shoulders Display",sans-serif; font-size:1.5rem; font-weight:800;
+                  color:#c8ff3a; letter-spacing:-0.01em; line-height:1;'>⚡ SMARTBIZ</div>
+      <div style='font-family:"JetBrains Mono",monospace; font-size:0.62rem; color:#8a8f80;
+                  letter-spacing:0.1em; text-transform:uppercase; margin-top:2px;'>ERP SYSTEM</div>
+    </div>
+    """, unsafe_allow_html=True)
+    st.divider()
+    st.markdown(f"""
+    <div style='font-family:"JetBrains Mono",monospace; margin-bottom:2px;'>
+      <span style='color:#8a8f80; font-size:0.65rem; text-transform:uppercase; letter-spacing:0.08em;'>Operator</span><br>
+      <span style='color:#eef0e6; font-size:0.88rem; font-weight:700;'>👤 {user['name']}</span>
+    </div>
+    <div style='display:inline-block; background:#c8ff3a; color:#0a0b08; font-family:"JetBrains Mono",monospace;
+                font-size:0.6rem; font-weight:700; letter-spacing:0.1em; padding:2px 8px;
+                text-transform:uppercase; margin-top:4px;'>{user['role']}</div>
+    """, unsafe_allow_html=True)
     st.divider()
 
     selected_module = st.radio("Navigation", allowed_modules, index=0)
