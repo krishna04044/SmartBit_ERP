@@ -1,1 +1,93 @@
-{% extends 'base.html' %}{% block content %}<h2>Users & Roles</h2><div class="card p-3 mb-3"><form method="post" class="row g-2"><div class="col-md-2"><input class="form-control" name="name" placeholder="Name" required></div><div class="col-md-3"><input class="form-control" name="email" type="email" placeholder="Email" required></div><div class="col-md-2"><input class="form-control" name="password" type="password" placeholder="Password" required></div><div class="col-md-3"><select class="form-select" name="role">{% for r in roles %}<option>{{r}}</option>{% endfor %}</select></div><div class="col-md-2"><button class="btn btn-dark w-100">Create User</button></div></form></div><div class="card p-3"><div class="table-responsive"><table class="table"><tr><th>Name</th><th>Email</th><th>Role</th><th>Created</th><th>Actions</th></tr>{% for u in users %}<tr><td>{{u.name}}</td><td>{{u.email}}</td><td><span class="badge text-bg-dark">{{u.role}}</span></td><td>{{u.created_at}}</td><td class="actions"><a class="btn btn-sm btn-outline-primary" href="{{url_for('edit_user',item_id=u.id)}}">Edit</a><form method="post" action="{{url_for('delete_user',item_id=u.id)}}" class="d-inline" onsubmit="return confirm('Delete this user?')"><button class="btn btn-sm btn-outline-danger">Delete</button></form></td></tr>{% endfor %}</table></div></div>{% endblock %}
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h2 class="fw-bold mb-1">User Management & RBAC</h2>
+    <p class="text-muted mb-0">Control system logins, role permissions, and administrative privileges.</p>
+  </div>
+</div>
+
+<div class="card p-3 mb-4">
+  <div class="card-title fw-semibold text-muted small text-uppercase mb-3">Create System User</div>
+  <form method="post" class="row g-2 align-items-end">
+    <div class="col-md-3">
+      <label class="form-label small text-muted">Full Name *</label>
+      <input class="form-control" name="name" placeholder="User name" required>
+    </div>
+    <div class="col-md-3">
+      <label class="form-label small text-muted">Email Address *</label>
+      <input class="form-control" name="email" type="email" placeholder="name@company.com" required>
+    </div>
+    <div class="col-md-2">
+      <label class="form-label small text-muted">Password *</label>
+      <input class="form-control" name="password" type="password" placeholder="Min 6 characters" required>
+    </div>
+    <div class="col-md-3">
+      <label class="form-label small text-muted">System Role *</label>
+      <select class="form-select" name="role">
+        {% for r in roles %}
+        <option value="{{r}}">{{r}}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-1">
+      <button class="btn btn-primary w-100">
+        <i class="bi bi-person-check"></i> Save
+      </button>
+    </div>
+  </form>
+</div>
+
+<div class="card p-3">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="fw-bold mb-0">System Users</h5>
+    <span class="badge bg-light text-dark border">{{users|length}} accounts</span>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Created Date</th>
+          <th class="text-end">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for u in users %}
+        <tr>
+          <td>
+            <div class="fw-semibold text-dark">{{u.name}}</div>
+            {% if u.id == session_user.get('user_id') %}
+            <span class="badge bg-primary-subtle text-primary border border-primary-subtle small">Current Session</span>
+            {% endif %}
+          </td>
+          <td>{{u.email}}</td>
+          <td>
+            <span class="badge bg-dark-subtle text-dark border border-dark-subtle">{{u.role}}</span>
+          </td>
+          <td class="text-muted">{{u.created_at}}</td>
+          <td class="text-end actions">
+            <a class="btn btn-sm btn-outline-secondary" href="{{url_for('edit_user', item_id=u.id)}}" title="Edit User">
+              <i class="bi bi-pencil"></i>
+            </a>
+            {% if u.id != session_user.get('user_id') %}
+            <form method="post" action="{{url_for('delete_user', item_id=u.id)}}" class="d-inline" onsubmit="return confirm('Permanently delete user {{u.name}}?')">
+              <button class="btn btn-sm btn-outline-danger" title="Delete User">
+                <i class="bi bi-trash"></i>
+              </button>
+            </form>
+            {% else %}
+            <button class="btn btn-sm btn-outline-secondary" disabled title="You cannot delete yourself">
+              <i class="bi bi-lock"></i>
+            </button>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

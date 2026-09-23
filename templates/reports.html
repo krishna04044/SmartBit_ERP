@@ -1,1 +1,125 @@
-{% extends 'base.html' %}{% block content %}<h2>Reports & Analytics</h2><div class="row g-3"><div class="col-md-3"><div class="card p-3"><div class="text-muted">Sales Orders</div><div class="stat">{{sales['count']}}</div><div>₹{{sales['total']}}</div></div></div><div class="col-md-3"><div class="card p-3"><div class="text-muted">Expenses</div><div class="stat">{{expenses['count']}}</div><div>₹{{expenses['total']}}</div></div></div><div class="col-md-3"><div class="card p-3"><div class="text-muted">Products</div><div class="stat">{{products['count']}}</div></div></div><div class="col-md-3"><div class="card p-3"><div class="text-muted">Low Stock</div><div class="stat">{{low['count']}}</div></div></div></div><div class="card p-4 mt-3"><h5>Recommended final-year extensions</h5><ul><li>PDF/Excel export</li><li>Monthly/quarterly filters</li><li>Advanced charts</li><li>ML sales and demand forecasting</li><li>K-Means customer segmentation</li><li>Anomaly detection</li></ul></div>{% endblock %}
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h2 class="fw-bold mb-1">Reports & Analytics</h2>
+    <p class="text-muted mb-0">Financial metrics, inventory turnover, and historical performance breakdowns.</p>
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-sm-6 col-xl-3">
+    <div class="card p-3">
+      <div class="stat-label">Sales Orders</div>
+      <div class="stat-val text-primary">{{sales['count']}}</div>
+      <div class="small fw-semibold text-dark mt-1">₹{{'%.2f'|format(sales['total'])}} total</div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-3">
+    <div class="card p-3">
+      <div class="stat-label">Total Expenses</div>
+      <div class="stat-val text-danger">{{expenses['count']}}</div>
+      <div class="small fw-semibold text-dark mt-1">₹{{'%.2f'|format(expenses['total'])}} total</div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-3">
+    <div class="card p-3">
+      <div class="stat-label">Inventory Asset Value</div>
+      <div class="stat-val text-success">₹{{'%.2f'|format(products['val'])}}</div>
+      <div class="small text-muted mt-1">{{products['count']}} products in catalog</div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-3">
+    <div class="card p-3">
+      <div class="stat-label">Low Stock Alerts</div>
+      <div class="stat-val {% if low['count'] > 0 %}text-danger{% else %}text-muted{% endif %}">{{low['count']}}</div>
+      <div class="small text-muted mt-1">Needs reordering</div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-lg-7">
+    <div class="card p-3 h-100">
+      <h5 class="fw-bold mb-3">Monthly Financial Performance</h5>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead>
+            <tr>
+              <th>Month</th>
+              <th>Sales Revenue</th>
+              <th>Expenses</th>
+              <th>Net Operating Profit</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for m in monthly_breakdown %}
+            <tr>
+              <td class="fw-semibold">{{m.month}}</td>
+              <td class="text-success">₹{{'%.2f'|format(m.sales)}}</td>
+              <td class="text-danger">₹{{'%.2f'|format(m.expenses)}}</td>
+              <td class="fw-bold {% if m.profit >= 0 %}text-primary{% else %}text-danger{% endif %}">
+                ₹{{'%.2f'|format(m.profit)}}
+              </td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="4" class="text-center py-3 text-muted">No monthly records yet.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="card p-3 h-100">
+      <h5 class="fw-bold mb-3">Top Selling Products</h5>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Units Sold</th>
+              <th class="text-end">Revenue</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for p in top_products %}
+            <tr>
+              <td>
+                <div class="fw-medium">{{p.name}}</div>
+                <small class="text-muted">{{p.sku}}</small>
+              </td>
+              <td class="fw-bold">{{p.total_qty}}</td>
+              <td class="text-end fw-semibold text-success">₹{{'%.2f'|format(p.total_revenue)}}</td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="3" class="text-center py-3 text-muted">No sales items recorded yet.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card p-3">
+  <h5 class="fw-bold mb-3">Expenses by Category</h5>
+  <div class="row g-2">
+    {% for c in expense_categories %}
+    <div class="col-md-3">
+      <div class="p-3 bg-light rounded border">
+        <div class="text-muted small text-uppercase">{{c.category}} ({{c.count}} entries)</div>
+        <div class="fs-5 fw-bold text-dark mt-1">₹{{'%.2f'|format(c.total)}}</div>
+      </div>
+    </div>
+    {% else %}
+    <div class="col-12 text-muted py-2">No categorized expenses recorded yet.</div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

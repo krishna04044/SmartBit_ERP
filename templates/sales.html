@@ -1,1 +1,129 @@
-{% extends 'base.html' %}{% block content %}<div class="d-flex justify-content-between align-items-center mb-3"><div><h2>Sales & Invoices</h2><p class="text-muted mb-0">Create a sale and generate a printable/PDF invoice.</p></div></div><div class="card p-3 mb-3"><form method="post" class="row g-2"><div class="col-md-3"><select class="form-select" name="customer_id"><option value="">Walk-in customer</option>{% for c in customers %}<option value="{{c.id}}">{{c.name}}</option>{% endfor %}</select></div><div class="col-md-3"><select class="form-select" name="product_id" required>{% for p in products %}<option value="{{p.id}}">{{p.name}} — ₹{{p.selling_price}} ({{p.stock}})</option>{% endfor %}</select></div><div class="col-md-1"><input class="form-control" name="qty" type="number" min="1" value="1"></div><div class="col-md-2"><select class="form-select" name="payment_method"><option>UPI</option><option>Cash</option><option>Card</option><option>Bank Transfer</option></select></div><div class="col-md-2"><select class="form-select" name="payment_status"><option>Paid</option><option>Pending</option></select></div><div class="col-md-1"><button class="btn btn-dark w-100">Sell</button></div></form></div><div class="card p-3"><div class="table-responsive"><table class="table"><tr><th>Invoice</th><th>Customer</th><th>Total</th><th>Payment</th><th>Date</th><th>Invoice</th><th>Actions</th></tr>{% for s in sales %}<tr><td>{{s.invoice_no}}</td><td>{{s.customer or 'Walk-in'}}</td><td>₹{{'%.2f'|format(s.total)}}</td><td>{{s.payment_status}}</td><td>{{s.created_at}}</td><td><a class="btn btn-sm btn-success" href="{{url_for('invoice',item_id=s.id)}}" target="_blank">View / Print</a> <a class="btn btn-sm btn-outline-dark" href="{{url_for('invoice_pdf',item_id=s.id)}}">PDF</a></td><td class="actions"><a class="btn btn-sm btn-outline-primary" href="{{url_for('edit_sale',item_id=s.id)}}">Edit</a><form method="post" action="{{url_for('delete_sale',item_id=s.id)}}" class="d-inline" onsubmit="return confirm('Delete this sale? Stock will be restored.')"><button class="btn btn-sm btn-outline-danger">Delete</button></form></td></tr>{% else %}<tr><td colspan="7" class="text-center text-muted">No sales yet.</td></tr>{% endfor %}</table></div></div>{% endblock %}
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h2 class="fw-bold mb-1">Sales & Invoicing</h2>
+    <p class="text-muted mb-0">Record new sales orders, automatically update inventory, and generate invoices.</p>
+  </div>
+</div>
+
+<div class="card p-3 mb-4">
+  <div class="card-title fw-semibold text-muted small text-uppercase mb-3">Record New Sale</div>
+  <form method="post" class="row g-2 align-items-end">
+    <div class="col-md-3">
+      <label class="form-label small text-muted">Customer</label>
+      <select class="form-select" name="customer_id">
+        <option value="">Walk-in Customer (None)</option>
+        {% for c in customers %}
+        <option value="{{c.id}}">{{c.name}} {% if c.phone %}({{c.phone}}){% endif %}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-3">
+      <label class="form-label small text-muted">Product & Stock</label>
+      <select class="form-select" name="product_id" required>
+        {% if products %}
+          <option value="" disabled selected>Select a product...</option>
+          {% for p in products %}
+          <option value="{{p.id}}" {% if p.stock <= 0 %}disabled{% endif %}>
+            {{p.name}} &bull; ₹{{'%.2f'|format(p.selling_price)}} ({{p.stock}} in stock)
+          </option>
+          {% endfor %}
+        {% else %}
+          <option value="" disabled selected>No products available — add products first</option>
+        {% endif %}
+      </select>
+    </div>
+    <div class="col-md-2">
+      <label class="form-label small text-muted">Quantity</label>
+      <input class="form-control" name="qty" type="number" min="1" value="1" required>
+    </div>
+    <div class="col-md-2">
+      <label class="form-label small text-muted">Payment Method</label>
+      <select class="form-select" name="payment_method">
+        <option value="UPI">UPI</option>
+        <option value="Cash">Cash</option>
+        <option value="Card">Card</option>
+        <option value="Bank Transfer">Bank Transfer</option>
+      </select>
+    </div>
+    <div class="col-md-1">
+      <label class="form-label small text-muted">Status</label>
+      <select class="form-select" name="payment_status">
+        <option value="Paid">Paid</option>
+        <option value="Pending">Pending</option>
+      </select>
+    </div>
+    <div class="col-md-1">
+      <button class="btn btn-primary w-100" {% if not products %}disabled{% endif %}>
+        <i class="bi bi-cart-plus"></i> Sell
+      </button>
+    </div>
+  </form>
+</div>
+
+<div class="card p-3">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="fw-bold mb-0">Sales Orders History</h5>
+    <span class="badge bg-light text-dark border">{{sales|length}} records</span>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead>
+        <tr>
+          <th>Invoice #</th>
+          <th>Customer</th>
+          <th>Total</th>
+          <th>Status</th>
+          <th>Method</th>
+          <th>Date</th>
+          <th>Invoice</th>
+          <th class="text-end">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in sales %}
+        <tr>
+          <td class="fw-semibold text-primary">{{s.invoice_no}}</td>
+          <td>{{s.customer or 'Walk-in Customer'}}</td>
+          <td class="fw-bold">₹{{'%.2f'|format(s.total)}}</td>
+          <td>
+            {% if s.payment_status == 'Paid' %}
+            <span class="badge bg-success-subtle text-success border border-success-subtle">Paid</span>
+            {% else %}
+            <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle">Pending</span>
+            {% endif %}
+          </td>
+          <td><span class="badge bg-light text-dark border">{{s.payment_method or 'UPI'}}</span></td>
+          <td class="text-muted">{{s.created_at}}</td>
+          <td>
+            <div class="btn-group btn-group-sm">
+              <a class="btn btn-outline-primary" href="{{url_for('invoice', item_id=s.id)}}" target="_blank" title="View / Print HTML Invoice">
+                <i class="bi bi-printer"></i> View
+              </a>
+              <a class="btn btn-outline-dark" href="{{url_for('invoice_pdf', item_id=s.id)}}" title="Download PDF Invoice">
+                <i class="bi bi-file-earmark-pdf"></i> PDF
+              </a>
+            </div>
+          </td>
+          <td class="text-end actions">
+            <a class="btn btn-sm btn-outline-secondary" href="{{url_for('edit_sale', item_id=s.id)}}">
+              <i class="bi bi-pencil"></i>
+            </a>
+            <form method="post" action="{{url_for('delete_sale', item_id=s.id)}}" class="d-inline" onsubmit="return confirm('Delete this sale? Associated stock will be restored.')">
+              <button class="btn btn-sm btn-outline-danger" title="Delete Sale & Restore Stock">
+                <i class="bi bi-trash"></i>
+              </button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="8" class="text-center py-4 text-muted">No sales orders found yet. Create your first sale above!</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

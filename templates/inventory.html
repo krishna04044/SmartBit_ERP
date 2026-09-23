@@ -1,1 +1,98 @@
-{% extends 'base.html' %}{% block content %}<div class="d-flex justify-content-between align-items-center mb-3"><div><h2>Inventory Management</h2><p class="text-muted">Live stock position with low-stock monitoring.</p></div>{% if can('products') %}<a class="btn btn-dark" href="{{url_for('products')}}">Manage Products</a>{% endif %}</div><div class="card p-3"><div class="table-responsive"><table class="table"><tr><th>SKU</th><th>Product</th><th>Warehouse</th><th>Stock</th><th>Minimum</th><th>Status</th><th>Action</th></tr>{% for p in products %}<tr><td>{{p.sku}}</td><td>{{p.name}}</td><td>{{p.warehouse}}</td><td>{{p.stock}}</td><td>{{p.min_stock}}</td><td>{% if p.stock<=p.min_stock %}<span class="badge bg-danger">Reorder</span>{% else %}<span class="badge bg-success">OK</span>{% endif %}</td><td>{% if can('products') %}<a class="btn btn-sm btn-outline-primary" href="{{url_for('edit_product',item_id=p.id)}}">Edit</a>{% endif %}</td></tr>{% endfor %}</table></div></div>{% endblock %}
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h2 class="fw-bold mb-1">Inventory Management</h2>
+    <p class="text-muted mb-0">Live stock tracking, reorder alert levels, and total warehouse asset valuation.</p>
+  </div>
+  {% if can('products') %}
+  <a class="btn btn-primary" href="{{url_for('products')}}">
+    <i class="bi bi-box-seam me-1"></i> Manage Products
+  </a>
+  {% endif %}
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <div class="card p-3">
+      <div class="stat-label">Total Inventory Valuation</div>
+      <div class="stat-val text-primary">₹{{'%.2f'|format(valuation)}}</div>
+      <div class="small text-muted mt-1">Based on purchase cost</div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card p-3">
+      <div class="stat-label">Total Units in Stock</div>
+      <div class="stat-val text-dark">{{total_units}}</div>
+      <div class="small text-muted mt-1">Across all catalog items</div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card p-3">
+      <div class="stat-label">Catalog Items Tracked</div>
+      <div class="stat-val text-secondary">{{products|length}}</div>
+      <div class="small text-muted mt-1">Active SKUs</div>
+    </div>
+  </div>
+</div>
+
+<div class="card p-3">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="fw-bold mb-0">Live Inventory Position</h5>
+    <span class="badge bg-light text-dark border">Sorted by lowest stock first</span>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead>
+        <tr>
+          <th>SKU</th>
+          <th>Product</th>
+          <th>Warehouse</th>
+          <th>Current Stock</th>
+          <th>Min Level</th>
+          <th>Inventory Value</th>
+          <th>Stock Status</th>
+          <th class="text-end">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in products %}
+        <tr>
+          <td class="fw-semibold text-primary">{{p.sku}}</td>
+          <td>{{p.name}}</td>
+          <td><span class="badge bg-light text-dark border">{{p.warehouse}}</span></td>
+          <td class="fw-bold fs-6">{{p.stock}}</td>
+          <td class="text-muted">{{p.min_stock}}</td>
+          <td>₹{{'%.2f'|format(p.stock * p.purchase_price)}}</td>
+          <td>
+            {% if p.stock <= 0 %}
+            <span class="badge bg-danger">Critical: Out of Stock</span>
+            {% elif p.stock <= p.min_stock %}
+            <span class="badge bg-warning text-dark">Reorder Needed</span>
+            {% else %}
+            <span class="badge bg-success">Optimal</span>
+            {% endif %}
+          </td>
+          <td class="text-end">
+            {% if can('products') %}
+            <a class="btn btn-sm btn-outline-secondary" href="{{url_for('edit_product', item_id=p.id)}}">
+              <i class="bi bi-pencil me-1"></i> Edit Stock
+            </a>
+            {% endif %}
+            {% if can('purchases') and p.stock <= p.min_stock %}
+            <a class="btn btn-sm btn-outline-primary ms-1" href="{{url_for('purchases')}}">
+              <i class="bi bi-cart-plus me-1"></i> Restock
+            </a>
+            {% endif %}
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="8" class="text-center py-4 text-muted">No inventory records found.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
