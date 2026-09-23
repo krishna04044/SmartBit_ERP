@@ -55,8 +55,18 @@ def init_db():
     CREATE TABLE IF NOT EXISTS employees(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, department TEXT, job_role TEXT, salary REAL DEFAULT 0, status TEXT DEFAULT 'Active', created_at TEXT NOT NULL);
     ''')
     if conn.execute('SELECT COUNT(*) n FROM users').fetchone()['n'] == 0:
-        conn.execute('INSERT INTO users(name,email,password,role,created_at) VALUES(?,?,?,?,?)',
-                     ('Administrator', 'admin@smartbiz.com', generate_password_hash('admin123'), 'Super Admin', now()))
+        sample_users = [
+            ('Administrator', 'admin@smartbiz.com', generate_password_hash('admin123'), 'Super Admin', now()),
+            ('Krishna Karthik', 'krishna@smartbiz.com', generate_password_hash('krishna123'), 'Business Admin', now()),
+            ('Sophia Vance', 'finance@smartbiz.com', generate_password_hash('finance123'), 'Finance Manager', now()),
+            ('Marcus Chen', 'inventory@smartbiz.com', generate_password_hash('inventory123'), 'Inventory Manager', now()),
+            ('Sarah Jenkins', 'sales@smartbiz.com', generate_password_hash('sales123'), 'Sales Manager', now()),
+            ('David Miller', 'purchase@smartbiz.com', generate_password_hash('purchase123'), 'Purchase Manager', now()),
+            ('Elena Rostova', 'hr@smartbiz.com', generate_password_hash('hr123'), 'HR Manager', now()),
+            ('Alex Rivera', 'salesstaff@smartbiz.com', generate_password_hash('staff123'), 'Sales Staff', now()),
+            ('Liam Wright', 'inventorystaff@smartbiz.com', generate_password_hash('staff123'), 'Inventory Staff', now())
+        ]
+        conn.executemany('INSERT INTO users(name,email,password,role,created_at) VALUES(?,?,?,?,?)', sample_users)
     if conn.execute('SELECT COUNT(*) n FROM products').fetchone()['n'] == 0:
         conn.executemany('INSERT INTO products(sku,name,category,purchase_price,selling_price,stock,min_stock,warehouse,created_at) VALUES(?,?,?,?,?,?,?,?,?)', [
             ('KB-001', 'Wireless Keyboard', 'Accessories', 500, 800, 113, 20, 'Main Warehouse', now()),
@@ -591,12 +601,12 @@ if not st.session_state.user:
             email = st.text_input("Email Address", value="admin@smartbiz.com", placeholder="admin@smartbiz.com")
             password = st.text_input("Password", type="password", value="admin123", placeholder="••••••••")
 
-            st.markdown("""
+            st.html("""
             <div class='login-remember-row'>
               <span>⚡ Secure enterprise login</span>
               <a href='#'>Forgot password?</a>
             </div>
-            """, unsafe_allow_html=True)
+            """)
 
             submit = st.form_submit_button("→ ACCESS SYSTEM")
 
@@ -607,11 +617,17 @@ if not st.session_state.user:
                 else:
                     st.error("⛔ Invalid credentials. Access denied.")
 
-        st.markdown("""
+        st.html("""
         <div class='login-creds-strip'>
-          Demo → <strong>admin@smartbiz.com</strong> / <strong>admin123</strong> &nbsp;|&nbsp; Role: <strong>Super Admin</strong>
+          <div style='font-weight:700; color:#c8ff3a; margin-bottom:4px;'>DEMO ACCOUNTS (ROLE-BASED):</div>
+          • <strong>admin@smartbiz.com</strong> / admin123 (Super Admin)<br>
+          • <strong>krishna@smartbiz.com</strong> / krishna123 (Business Admin)<br>
+          • <strong>finance@smartbiz.com</strong> / finance123 (Finance Manager)<br>
+          • <strong>inventory@smartbiz.com</strong> / inventory123 (Inventory Manager)<br>
+          • <strong>sales@smartbiz.com</strong> / sales123 (Sales Manager)<br>
+          • <strong>hr@smartbiz.com</strong> / hr123 (HR Manager)
         </div>
-        """, unsafe_allow_html=True)
+        """)
     st.stop()
 
 # ----------------- AUTHENTICATED USER SESSION -----------------
@@ -619,16 +635,16 @@ user = st.session_state.user
 allowed_modules = ROLES.get(user['role'], ['Dashboard'])
 
 with st.sidebar:
-    st.markdown("""
+    st.html("""
     <div style='padding: 4px 0 8px 0;'>
       <div style='font-family:"Big Shoulders Display",sans-serif; font-size:1.5rem; font-weight:800;
                   color:#c8ff3a; letter-spacing:-0.01em; line-height:1;'>⚡ SMARTBIZ</div>
       <div style='font-family:"JetBrains Mono",monospace; font-size:0.62rem; color:#8a8f80;
                   letter-spacing:0.1em; text-transform:uppercase; margin-top:2px;'>ERP SYSTEM</div>
     </div>
-    """, unsafe_allow_html=True)
+    """)
     st.divider()
-    st.markdown(f"""
+    st.html(f"""
     <div style='font-family:"JetBrains Mono",monospace; margin-bottom:2px;'>
       <span style='color:#8a8f80; font-size:0.65rem; text-transform:uppercase; letter-spacing:0.08em;'>Operator</span><br>
       <span style='color:#eef0e6; font-size:0.88rem; font-weight:700;'>👤 {user['name']}</span>
@@ -636,7 +652,7 @@ with st.sidebar:
     <div style='display:inline-block; background:#c8ff3a; color:#0a0b08; font-family:"JetBrains Mono",monospace;
                 font-size:0.6rem; font-weight:700; letter-spacing:0.1em; padding:2px 8px;
                 text-transform:uppercase; margin-top:4px;'>{user['role']}</div>
-    """, unsafe_allow_html=True)
+    """)
     st.divider()
 
     selected_module = st.radio("Navigation", allowed_modules, index=0)
