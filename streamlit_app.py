@@ -157,16 +157,126 @@ def logout_user():
 
 # ----------------- LOGIN SCREEN -----------------
 if not st.session_state.user:
+    st.markdown("""
+    <style>
+    /* From Uiverse.io by micaelgomestavares */
+    .stApp {
+      background: radial-gradient(circle at 10% 20%, #1e293b 0%, #0f172a 90%);
+    }
+
+    [data-testid="stForm"] {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background-color: #ffffff !important;
+      padding: 30px !important;
+      max-width: 450px !important;
+      margin: 40px auto !important;
+      border-radius: 20px !important;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3) !important;
+      border: 1.5px solid #ecedec !important;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif !important;
+    }
+
+    [data-testid="stForm"] label {
+      color: #151717 !important;
+      font-weight: 600 !important;
+      font-size: 14px !important;
+      margin-bottom: 4px !important;
+    }
+
+    [data-testid="stForm"] input {
+      border: 1.5px solid #ecedec !important;
+      border-radius: 10px !important;
+      height: 50px !important;
+      padding-left: 14px !important;
+      font-size: 14px !important;
+      color: #0f172a !important;
+      transition: 0.2s ease-in-out !important;
+      background-color: #ffffff !important;
+    }
+
+    [data-testid="stForm"] input:focus {
+      border: 1.5px solid #2d79f3 !important;
+      box-shadow: none !important;
+      outline: none !important;
+    }
+
+    [data-testid="stFormSubmitButton"] button {
+      margin: 15px 0 5px 0 !important;
+      background-color: #151717 !important;
+      border: none !important;
+      color: white !important;
+      font-size: 15px !important;
+      font-weight: 500 !important;
+      border-radius: 10px !important;
+      height: 50px !important;
+      width: 100% !important;
+      cursor: pointer !important;
+      transition: 0.2s ease-in-out !important;
+    }
+
+    [data-testid="stFormSubmitButton"] button:hover {
+      background-color: #252727 !important;
+      border: none !important;
+      color: white !important;
+    }
+
+    .form-header-title {
+      font-weight: 700;
+      color: #0f172a;
+      font-size: 24px;
+      text-align: center;
+      margin-bottom: 2px;
+    }
+
+    .form-header-sub {
+      color: #64748b;
+      font-size: 14px;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    .flex-row-links {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      margin-top: 4px;
+    }
+
+    .flex-row-links span {
+      color: #2d79f3;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .demo-credentials-card {
+      max-width: 450px;
+      margin: 0 auto;
+      padding: 12px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 13px;
+      color: #475569;
+      text-align: center;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
-        st.markdown("<h2 style='text-align: center; color: #1e293b;'>💼 SmartBiz ERP</h2>", unsafe_allow_html=True)
-        st.markdown("<p style='text-align: center; color: #64748b;'>Enterprise Resource Planning & Business Management</p>", unsafe_allow_html=True)
-        
         with st.form("login_form"):
-            st.subheader("Sign In")
-            email = st.text_input("Email Address", value="admin@smartbiz.com")
-            password = st.text_input("Password", type="password", value="admin123")
-            submit = st.form_submit_button("Sign In", use_container_width=True, type="primary")
+            st.markdown("<div class='form-header-title'>💼 SmartBiz ERP</div>", unsafe_allow_html=True)
+            st.markdown("<div class='form-header-sub'>Enterprise Resource Planning & Management</div>", unsafe_allow_html=True)
+
+            email = st.text_input("Email", value="admin@smartbiz.com", placeholder="Enter your Email")
+            password = st.text_input("Password", type="password", value="admin123", placeholder="Enter your Password")
+
+            st.markdown("<div class='flex-row-links'><label><input type='checkbox' checked> Remember me</label><span>Forgot password?</span></div>", unsafe_allow_html=True)
+
+            submit = st.form_submit_button("Sign In")
 
             if submit:
                 if login_user(email, password):
@@ -175,7 +285,14 @@ if not st.session_state.user:
                 else:
                     st.error("Invalid email or password.")
 
-        st.info("💡 **Demo Credentials**:\n- **Email**: `admin@smartbiz.com`\n- **Password**: `admin123`")
+            st.markdown("<p style='text-align: center; font-size: 14px; color: black; margin: 10px 0 0 0;'>Demo Account: <span style='color: #2d79f3; font-weight: 500;'>Super Admin</span></p>", unsafe_allow_html=True)
+
+        st.markdown("""
+        <div class='demo-credentials-card'>
+          <div><strong>Email:</strong> admin@smartbiz.com</div>
+          <div><strong>Password:</strong> admin123</div>
+        </div>
+        """, unsafe_allow_html=True)
     st.stop()
 
 # ----------------- AUTHENTICATED USER SESSION -----------------
