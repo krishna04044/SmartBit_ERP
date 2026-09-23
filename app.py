@@ -127,9 +127,10 @@ def dashboard():
     orders = c.execute('SELECT COUNT(*) v FROM sales').fetchone()['v']
     low = c.execute('SELECT * FROM products WHERE stock <= min_stock ORDER BY stock ASC').fetchall()
     recent = c.execute('SELECT s.*, c.name customer FROM sales s LEFT JOIN customers c ON c.id=s.customer_id ORDER BY s.id DESC LIMIT 8').fetchall()
-    monthly = c.execute("SELECT substr(created_at,1,7) month, SUM(total) total FROM sales GROUP BY month ORDER BY month DESC LIMIT 6").fetchall()
+    monthly_rows = c.execute("SELECT substr(created_at,1,7) month, SUM(total) total FROM sales GROUP BY month ORDER BY month DESC LIMIT 6").fetchall()
+    monthly = [{'month': m['month'], 'total': float(m['total'])} for m in reversed(monthly_rows)]
     c.close()
-    return render_template('dashboard.html', revenue=revenue, expenses=expenses, purchases=purchases, profit=revenue-expenses, customers=customers, orders=orders, low=low, recent=recent, monthly=list(reversed(monthly)))
+    return render_template('dashboard.html', revenue=revenue, expenses=expenses, purchases=purchases, profit=revenue-expenses, customers=customers, orders=orders, low=low, recent=recent, monthly=monthly)
 
 @app.route('/products', methods=['GET','POST'])
 def products():
