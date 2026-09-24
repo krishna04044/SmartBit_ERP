@@ -1,11 +1,16 @@
 [theme]
-base = "dark"
-primaryColor = "#c8ff3a"
-backgroundColor = "#0a0b08"
-secondaryBackgroundColor = "#14160f"
-textColor = "#eef0e6"
-font = "monospace"
+base = "light"
+primaryColor = "#9fe870"
+backgroundColor = "#ffffff"
+secondaryBackgroundColor = "#e8ebe6"
+textColor = "#0e0f0c"
+font = "sans serif"
 
 [server]
 headless = true
 port = 8501
+
+[client]
+toolbarMode = "minimal"
+
+
